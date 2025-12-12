@@ -47,7 +47,7 @@ spike_rect = spike_surf.get_rect(bottomleft=(0, 450))
 # clouds
 cloudmovex = 0
 cloudmoveindex = 1
-room = 1
+room = 5
 deaths = 0
 print("room " + str(room))
 
@@ -88,9 +88,25 @@ while True:
             Cloud(420, 100)
         ]
     elif room == 4:
-        item_rect.center = (400,300)
+        item_rect.center = (400,170)
         clouds = [
-            Cloud(0, ground_rect.y - 75)
+            Cloud(0, ground_rect.y - 75),
+            Cloud(300, ground_rect.y - 75),
+            Cloud(550, 300),
+            Cloud(550, 200),
+            Cloud(310,100),
+            Cloud(471, 100,0,"Assets/cloud2.png"),
+            Cloud(50, 200),
+            Cloud(cloudmovex + 177, 250)
+        ]
+    elif room == 5:
+        item_rect.center = (750, ground_rect.y - 50)
+        clouds = [
+            Cloud(20, ground_rect.y - 75),
+            Cloud(270, 300),
+            Cloud(270, 210),
+            Cloud(550, 100),
+            Cloud(250, 120)
         ]
 
 
