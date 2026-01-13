@@ -27,6 +27,10 @@ player_gravity = 0
 #ground
 ground_surf = pygame.image.load("Assets/groundph.png").convert_alpha()
 ground_rect = ground_surf.get_rect(topleft=(0,screen_height- 150))
+#clouds
+cloudmovex = 0
+cloudmoveindex = 1
+cloudmovespeed = 0.5
 
 
 
@@ -47,23 +51,32 @@ while True:
         if player_rect.bottom != ground_rect.top:
             player_gravity = 11
 
+    if cloudmoveindex == 1:
+        cloudmovex += cloudmovespeed
+    elif cloudmoveindex == 2:
+        cloudmovex -= cloudmovespeed
+    if cloudmovex == 70:
+        cloudmoveindex = 2
+    elif cloudmovex == 0:
+        cloudmoveindex = 1
+
     clouds = [
-        Cloud(50, 350),
-        Cloud(50, 250),
-        Cloud(50, 150),
-        Cloud(50, 50),
-        Cloud(250, 350),
-        Cloud(250, 250),
-        Cloud(250, 150),
-        Cloud(250, 50),
-        Cloud(450, 350),
-        Cloud(450, 250),
-        Cloud(450, 150),
-        Cloud(450, 50),
-        Cloud(650, 350),
-        Cloud(650, 250),
-        Cloud(650, 150),
-        Cloud(650, 50),
+        Cloud(cloudmovex + 50, 350),
+        Cloud(cloudmovex + 50, 250),
+        Cloud(cloudmovex + 50, 150),
+        Cloud(cloudmovex + 50, 50),
+        Cloud(cloudmovex + 250, 350),
+        Cloud(cloudmovex + 250, 250),
+        Cloud(cloudmovex + 250, 150),
+        Cloud(cloudmovex + 250, 50),
+        Cloud(cloudmovex + 450, 350),
+        Cloud(cloudmovex + 450, 250),
+        Cloud(cloudmovex + 450, 150),
+        Cloud(cloudmovex + 450, 50),
+        Cloud(cloudmovex + 650, 350),
+        Cloud(cloudmovex + 650, 250),
+        Cloud(cloudmovex + 650, 150),
+        Cloud(cloudmovex + 650, 50),
     ]
     on_platform = False
     prev_bottom = player_rect.bottom
