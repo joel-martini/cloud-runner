@@ -37,7 +37,7 @@ class Cloud:
 
 pygame.init()
 
-#variables
+#setup
 screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -57,6 +57,10 @@ on_platform = False
 #ground
 ground_surf = pygame.image.load("Assets/groundph.png").convert_alpha()
 ground_rect = ground_surf.get_rect(topleft=(0,screen_height- 150))
+#menus
+scene = "Start"
+startbutton_surf = pygame.transform.scale(pygame.image.load("Assets/start.png").convert_alpha(), (64, 64))
+startbutton_rect = startbutton_surf.get_rect(center=(screen_width / 2, screen_height/2))
 
 
 clouds = [
@@ -82,60 +86,65 @@ while True:
     if keys[pygame.K_s]:
         if player_rect.bottom != ground_rect.top:
             player_gravity = 11
+    mouse_pos = pygame.mouse.get_pos()
+    mouse_down = pygame.mouse.get_pressed()[0]
+
+    if scene == "Start":
+        if startbutton_rect.collidepoint(mouse_pos) and mouse_down:
+            scene = "Game"
+        screen.blit(startbutton_surf, startbutton_rect)
+
+    if scene == "Game":
+        for cloud in clouds:
+            cloud.update()
+
+        on_platform = False
+        prev_bottom = player_rect.bottom
+        prev_top = player_rect.top
+        player_gravity += 1
+        player_rect.y += player_gravity
 
 
+        for cloud in clouds:
+            if player_rect.colliderect(cloud.rect):
+
+                # landing on top
+                if player_gravity > 0 and prev_bottom <= cloud.rect.top:
+                    player_rect.bottom = cloud.rect.top
+                    player_gravity = 0
+                    on_platform = True
+
+                # hitting underside
+                elif player_gravity < 0 and prev_top >= cloud.rect.bottom:
+                    player_rect.top = cloud.rect.bottom
+                    player_gravity = 0
+
+                # sides
+                if (player_rect.right > cloud.rect.left and
+                    player_rect.left < cloud.rect.left and
+                    player_rect.bottom > cloud.rect.top + 5):
+                    player_rect.right = cloud.rect.left
+
+                elif (player_rect.left < cloud.rect.right and
+                      player_rect.right > cloud.rect.right and
+                      player_rect.bottom > cloud.rect.top + 5):
+                    player_rect.left = cloud.rect.right
+
+        if not on_platform and player_rect.bottom >= ground_rect.top:
+            player_rect.bottom = ground_rect.top
+            player_gravity = 0
+            on_platform = True
+
+        if player_rect.colliderect(finish_rect):
+            print("you win")
+            quit()
 
 
-    for cloud in clouds:
-        cloud.update()
-
-    on_platform = False
-    prev_bottom = player_rect.bottom
-    prev_top = player_rect.top
-    player_gravity += 1
-    player_rect.y += player_gravity
-
-
-    for cloud in clouds:
-        if player_rect.colliderect(cloud.rect):
-
-            # landing on top
-            if player_gravity > 0 and prev_bottom <= cloud.rect.top:
-                player_rect.bottom = cloud.rect.top
-                player_gravity = 0
-                on_platform = True
-
-            # hitting underside
-            elif player_gravity < 0 and prev_top >= cloud.rect.bottom:
-                player_rect.top = cloud.rect.bottom
-                player_gravity = 0
-
-            # sides
-            if (player_rect.right > cloud.rect.left and
-                player_rect.left < cloud.rect.left and
-                player_rect.bottom > cloud.rect.top + 5):
-                player_rect.right = cloud.rect.left
-
-            elif (player_rect.left < cloud.rect.right and
-                  player_rect.right > cloud.rect.right and
-                  player_rect.bottom > cloud.rect.top + 5):
-                player_rect.left = cloud.rect.right
-
-    if not on_platform and player_rect.bottom >= ground_rect.top:
-        player_rect.bottom = ground_rect.top
-        player_gravity = 0
-        on_platform = True
-
-    if player_rect.colliderect(finish_rect):
-        print("you win")
-        quit()
-
-
-    screen.fill((0,0,0))
-    for cloud in clouds:
-        cloud.draw(screen)
-    screen.blit(start_surf, start_rect), screen.blit(finish_surf, finish_rect)
-    screen.blit(ground_surf, ground_rect)
-    screen.blit(player_surf, player_rect)
+        screen.fill((0,0,0))
+        for cloud in clouds:
+            cloud.draw(screen)
+        screen.blit(start_surf, start_rect), screen.blit(finish_surf, finish_rect)
+        screen.blit(ground_surf, ground_rect)
+        screen.blit(player_surf, player_rect)
     pygame.display.flip()
     clock.tick(60)
