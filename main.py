@@ -43,15 +43,21 @@ screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Cloud Runner")
 clock = pygame.time.Clock()
+#start and finish
+start_surf = pygame.transform.scale(pygame.image.load("Assets/startland.png").convert_alpha(), (32, 32))
+start_rect = start_surf.get_rect(midbottom=(screen_width / 2, screen_height - 150))
+finish_surf = pygame.transform.scale(pygame.image.load("Assets/finishland.png").convert_alpha(), (32, 32))
+finish_rect = finish_surf.get_rect(midtop=(screen_width / 2, 0))
 #player
 player_surf = pygame.transform.scale(pygame.image.load("Assets/phplayer.png").convert_alpha(), (32,32))
-player_rect = player_surf.get_rect(midbottom=(screen_width//2, screen_height - 150))
+player_rect = player_surf.get_rect(center=(start_rect.centerx, start_rect.centery))
 player_speed = 5
 player_gravity = 0
 on_platform = False
 #ground
 ground_surf = pygame.image.load("Assets/groundph.png").convert_alpha()
 ground_rect = ground_surf.get_rect(topleft=(0,screen_height- 150))
+
 
 clouds = [
     Cloud(50, 350, index = 1), Cloud(50, 250, index = 2), Cloud(50, 150, index = 1), Cloud(50, 50, index =2),
@@ -120,11 +126,16 @@ while True:
         player_gravity = 0
         on_platform = True
 
+    if player_rect.colliderect(finish_rect):
+        print("you win")
+        quit()
+
 
     screen.fill((0,0,0))
     for cloud in clouds:
         cloud.draw(screen)
-    screen.blit(player_surf, player_rect)
+    screen.blit(start_surf, start_rect), screen.blit(finish_surf, finish_rect)
     screen.blit(ground_surf, ground_rect)
+    screen.blit(player_surf, player_rect)
     pygame.display.flip()
     clock.tick(60)
