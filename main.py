@@ -1,14 +1,23 @@
 import pygame
 from sys import exit
+import random
 
-class Cloud():
-    def __init__(self, x, y, speed = 1, image="Assets/phcloud.png", index = 1):
+class Cloud:
+    def __init__(self, x, y, speed = 1, image="Assets/phcloud.png", index = 1, special=1):
+        self.special = random.choices([0, 1, 2 ,3], weights=[0, 0.9, 0.05, 0.05])[0]
+        if self.special ==1:
+            image_path = "Assets/phcloud.png"
+        elif self.special ==2:
+            image_path = "Assets/phcloudgreen.png"
+        elif self.special ==3:
+            image_path = "Assets/phcloudred.png"
         self.surf = pygame.transform.scale(
-            pygame.image.load("Assets/phcloud.png").convert_alpha(),
+            pygame.image.load(image_path).convert_alpha(),
             (128,16))
         self.rect = self.surf.get_rect(topleft=(x,y))
         self.speed = speed
         self.index = index
+        self.image = image
 
     def update(self):
         if self.index == 1:
